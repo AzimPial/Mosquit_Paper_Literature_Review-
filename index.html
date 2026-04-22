@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mosquito Research — Bangladesh Paper Comparison</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141816;
+    --border: #1e2420;
+    --accent: #4ade80;
+    --accent2: #86efac;
+    --accent-dim: rgba(74,222,128,0.12);
+    --text: #e8ede9;
+    --text-muted: #7a8c7d;
+    --text-dim: #4a5c4d;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --blue: #60a5fa;
+    --tag-bg: #1a2e1d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+
+  .page-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .header {
+    margin-bottom: 48px;
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+  }
+
+  .header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .header-sub {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-yes { background: var(--accent); }
+  .dot-no  { background: var(--red); }
+  .dot-partial { background: var(--yellow); }
+
+  /* Table wrapper */
+  .table-scroll {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 960px;
+  }
+
+  thead tr {
+    background: #0a1a0c;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  tbody tr:nth-child(odd) { background: var(--surface); }
+  tbody tr:nth-child(even) { background: #111311; }
+  tbody tr:hover { background: var(--accent-dim); }
+
+  td {
+    padding: 18px 16px;
+    font-size: 13px;
+    vertical-align: top;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  /* Paper title cell */
+  .paper-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 5px;
+  }
+
+  .paper-year {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .paper-authors {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  /* Badge chips */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 2px 2px 2px 0;
+    white-space: nowrap;
+  }
+
+  .badge-green  { background: #14291a; color: var(--accent); border: 1px solid #1f3d24; }
+  .badge-red    { background: #291414; color: var(--red);    border: 1px solid #3d1f1f; }
+  .badge-yellow { background: #29220d; color: var(--yellow); border: 1px solid #3d3010; }
+  .badge-blue   { background: #141f29; color: var(--blue);   border: 1px solid #1f2e3d; }
+  .badge-gray   { background: #1c201d; color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* Model tags */
+  .model-tag {
+    display: inline-block;
+    background: var(--tag-bg);
+    border: 1px solid #253028;
+    color: var(--accent2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin: 2px 2px 2px 0;
+  }
+
+  /* Text blocks inside cells */
+  .cell-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .cell-text strong {
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  .gap-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 5px;
+    font-size: 12.5px;
+    color: #c9d6ca;
+  }
+
+  .gap-icon {
+    color: var(--red);
+    font-size: 11px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  /* Source link */
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #1f3d24;
+    border-radius: 4px;
+    background: #0e1f11;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+
+  .source-link:hover {
+    background: #142818;
+    border-color: var(--accent);
+  }
+
+  /* Publisher badge */
+  .pub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .pub-ieee    { background: #141e29; color: var(--blue); border: 1px solid #1e2f3d; }
+  .pub-springer{ background: #221a08; color: #f59e0b;     border: 1px solid #3d2e0a; }
+  .pub-plos    { background: #0f1e1a; color: #34d399;     border: 1px solid #163028; }
+  .pub-arxiv   { background: #1a1420; color: #a78bfa;     border: 1px solid #2a1e38; }
+
+  .pub-index {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: 2px;
+  }
+
+  /* Footer note */
+  .footer-note {
+    margin-top: 32px;
+    padding: 16px 20px;
+    border: 1px solid #1e3020;
+    background: #0a180c;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-note span {
+    color: var(--accent);
+    font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .col-title   { width: 200px; }
+  .col-model   { width: 160px; }
+  .col-contrib { width: 260px; }
+  .col-gap     { width: 230px; }
+  .col-pub     { width: 160px; }
+  .col-source  { width: 120px; }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <div class="header">
+    <div class="header-label">Research Intelligence Report</div>
+    <h1>Mosquito Detection &amp; Classification<br>Bangladesh — Existing Paper Landscape</h1>
+    <div class="header-sub">5 papers reviewed · Covers 2021 – 2025 · Focus: Bangladesh context, datasets, models, and gaps</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="dot dot-yes"></span> From Bangladesh / Yes</div>
+    <div class="legend-item"><span class="dot dot-no"></span> Not from Bangladesh / Missing</div>
+    <div class="legend-item"><span class="dot dot-partial"></span> Partially / Indirect</div>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-title">Title of Paper</th>
+          <th class="col-model">Model Used</th>
+          <th class="col-contrib">Contribution</th>
+          <th class="col-gap">Research Gap</th>
+          <th class="col-pub">Publisher / Index</th>
+          <th class="col-source">Source</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- PAPER 1 -->
+        <tr>
+          <td>
+            <div class="paper-title">Mosquito Classification Using CNN with Data Augmentation</div>
+            <div class="paper-year">2021</div>
+            <div class="paper-authors">Chowdhury et al.</div>
+            <div style="margin-top:8px">
+              <span class="badge badge-yellow">🟡 BD Context</span>
+              <span class="badge badge-red">No BD Dataset</span>
+              <span class="badge badge-red">No Detection</span>
+            </div>
+          </td>
+          <td>
+            <span class="model-tag">Custom CNN</span>
+            <span class="model-tag">VGG-16</span>
+            <span class="model-tag">Random Forest</span>
+            <span class="model-tag">XGBoost</span>
+            <span class="model-tag">SVM</span>
+          </td>
+          <td>
+            <div class="cell-text">
+              This is the <strong>first Bangladesh-context mosquito classification paper.</strong> It classifies three species — Aedes, Anopheles, and Culex — that are common in Bangladesh. Started with only 442 images and grew it to 3,600 using data augmentation. Reached <strong>93% accuracy</strong> after augmentation. Also compared CNN against traditional methods like SVM and XGBoost and showed CNN wins.
+            </div>
+          </td>
+          <td>
+            <div class="gap-item"><span class="gap-icon">✗</span>The images were NOT collected from Bangladesh. They were pulled from random online sources, so the dataset has no real Bangladesh identity.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Only 3 species covered. Bangladesh has 123 mosquito species — huge classification scope missing.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No real-world testing or deployment. The model stays inside a lab experiment.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No Explainable AI — you don't know why the model made each decision.</div>
+          </td>
+          <td>
+            <div class="pub-badge pub-springer">📘 Springer</div>
+            <div class="pub-index">Lecture Notes in Networks<br>and Systems (Scopus)</div>
+          </td>
+          <td>
+            <a class="source-link" href="https://link.springer.com/chapter/10.1007/978-3-030-68154-8_74" target="_blank">↗ Springer</a>
+            <a class="source-link" href="https://www.researchgate.net/publication/349155689" target="_blank">↗ ResearchGate</a>
+          </td>
+        </tr>
+
+        <!-- PAPER 2 -->
+        <tr>
+          <td>
+            <div class="paper-title">Advanced Vision Transformers &amp; Open-Set Learning for Robust Mosquito Classification</div>
+            <div class="paper-year">2024</div>
+            <div class="paper-authors">Karim, Mahmud, Khan — North South University, Dhaka</div>
+            <div style="margin-top:8px">
+              <span class="badge badge-green">✓ BD Authors</span>
+              <span class="badge badge-red">No BD Dataset</span>
+              <span class="badge badge-red">No Detection</span>
+            </div>
+          </td>
+          <td>
+            <span class="model-tag">Swin Transformer</span>
+            <span class="model-tag">MobileViT</span>
+            <span class="model-tag">Xception</span>
+            <span class="model-tag">OpenMax</span>
+            <span class="model-tag">Weibull Dist.</span>
+          </td>
+          <td>
+            <div class="cell-text">
+              Published in a high-impact SCI Q1 journal by Bangladeshi researchers at NSU Dhaka. <strong>Classifies 10 mosquito species</strong> — the widest scope in the list. Used Vision Transformers which are the latest AI architecture. Best model (Swin Transformer) got <strong>99.60% accuracy.</strong> Also added Open-Set Learning so the model can say "I don't know" when it sees a completely unknown insect or person — making it more honest and practical.
+            </div>
+          </td>
+          <td>
+            <div class="gap-item"><span class="gap-icon">✗</span>The dataset is international — NOT from Bangladesh. No mosquito was photographed on Bangladeshi soil for this paper.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No mosquito detection — it only classifies. If there are multiple mosquitoes in a photo, it can't locate them.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No smartphone or mobile deployment tested. It works on lab computers only.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No XAI — model doesn't explain which body part it looked at to make a decision.</div>
+          </td>
+          <td>
+            <div class="pub-badge pub-plos">🟢 PLoS Comp. Bio.</div>
+            <div class="pub-index">SCI Q1 · PubMed Indexed<br>High Impact Journal</div>
+          </td>
+          <td>
+            <a class="source-link" href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012654" target="_blank">↗ PLoS</a>
+            <a class="source-link" href="https://arxiv.org/abs/2408.06457" target="_blank">↗ arXiv</a>
+          </td>
+        </tr>
+
+        <!-- PAPER 3 -->
+        <tr>
+          <td>
+            <div class="paper-title">Mosquito Species Classification through Wingbeat Analysis: A Hybrid ML Approach</div>
+            <div class="paper-year">2023</div>
+            <div class="paper-authors">Rony, Karim, Rouf, Noor, Siddiqui</div>
+            <div style="margin-top:8px">
+              <span class="badge badge-yellow">🟡 BD Authors</span>
+              <span class="badge badge-red">No BD Audio Data</span>
+              <span class="badge badge-red">No Image / Detection</span>
+            </div>
+          </td>
+          <td>
+            <span class="model-tag">CNN</span>
+            <span class="model-tag">SVM</span>
+            <span class="model-tag">CNN + SVM Hybrid</span>
+          </td>
+          <td>
+            <div class="cell-text">
+              A different and creative approach — instead of looking at photos, it <strong>listens to the sound of mosquito wing flapping</strong> to identify species. Combined CNN (good at patterns) with SVM (good at decision boundaries) into one hybrid model. Got <strong>99.46% accuracy.</strong> This is valuable because a cheap microphone can detect mosquitoes without anyone needing to catch and photograph them.
+            </div>
+          </td>
+          <td>
+            <div class="gap-item"><span class="gap-icon">✗</span>Audio data was taken from a public international repository — no wingbeat sounds were recorded in Bangladesh, which has different environmental noise conditions.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Not tested in noisy real-world conditions like Dhaka streets or rural Bangladesh.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>The model needs the mosquito to be very close to the microphone — not practical for outdoor or community use yet.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No smartphone app or IoT trap integration shown.</div>
+          </td>
+          <td>
+            <div class="pub-badge pub-ieee">🔵 IEEE</div>
+            <div class="pub-index">NCIM 2023 Conference<br>IEEE Indexed</div>
+          </td>
+          <td>
+            <a class="source-link" href="https://doi.org/10.1109/NCIM59001.2023" target="_blank">↗ IEEE DOI</a>
+          </td>
+        </tr>
+
+        <!-- PAPER 4 -->
+        <tr>
+          <td>
+            <div class="paper-title">VisText-Mosquito: A Multimodal Dataset for Mosquito Breeding Site Detection &amp; Reasoning</div>
+            <div class="paper-year">2025</div>
+            <div class="paper-authors">Islam et al. — UIU &amp; BRAC University, Bangladesh</div>
+            <div style="margin-top:8px">
+              <span class="badge badge-green">✓ BD Dataset</span>
+              <span class="badge badge-yellow">🟡 Breeding Sites Only</span>
+              <span class="badge badge-red">No Species ID</span>
+            </div>
+          </td>
+          <td>
+            <span class="model-tag">YOLOv9s</span>
+            <span class="model-tag">YOLOv11n-Seg</span>
+            <span class="model-tag">BLIP (Vision-Language)</span>
+          </td>
+          <td>
+            <div class="cell-text">
+              The <strong>only paper that actually collected images from Bangladesh.</strong> Photographed real mosquito breeding spots (stagnant water, tires, pots) across different parts of the country. Also used a Vision-Language model (BLIP) so the AI can not only detect but also explain in plain text why a location is a breeding risk. 1,828 images with annotations. <strong>Most unique approach</strong> in this list — it reasons about risk, not just classifies.
+            </div>
+          </td>
+          <td>
+            <div class="gap-item"><span class="gap-icon">✗</span>Does NOT identify mosquito species at all. It only finds breeding spots — it never looks at an actual mosquito.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Dataset size is relatively small (1,828 images). Needs more variety across seasons and districts.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Not yet peer-reviewed — still a preprint on arXiv as of 2025.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No mobile app or community-level deployment tested yet.</div>
+          </td>
+          <td>
+            <div class="pub-badge pub-arxiv">🟣 arXiv</div>
+            <div class="pub-index">Preprint · 2025<br>Not yet peer-reviewed</div>
+          </td>
+          <td>
+            <a class="source-link" href="https://arxiv.org/abs/2506.14629" target="_blank">↗ arXiv</a>
+          </td>
+        </tr>
+
+        <!-- PAPER 5 -->
+        <tr>
+          <td>
+            <div class="paper-title">Prediction of Dengue Incidents Using Hospitalized Patients, Metrological &amp; Socio-Economic Data in Bangladesh</div>
+            <div class="paper-year">2022</div>
+            <div class="paper-authors">Dey, Rahman, Howlader et al.</div>
+            <div style="margin-top:8px">
+              <span class="badge badge-green">✓ BD Dataset</span>
+              <span class="badge badge-red">No Mosquito Detection</span>
+              <span class="badge badge-red">No Computer Vision</span>
+            </div>
+          </td>
+          <td>
+            <span class="model-tag">Multiple Linear Regression</span>
+            <span class="model-tag">Support Vector Regression</span>
+          </td>
+          <td>
+            <div class="cell-text">
+              Created the <strong>DengueBD dataset</strong> — a real Bangladesh dataset linking dengue case numbers, climate (rainfall, temperature, humidity), and socio-economic factors across 11 districts. Predicts how many dengue cases will happen based on environmental clues. Useful for health policymakers to prepare in advance. The connection to climate change patterns in Bangladesh is a key finding.
+            </div>
+          </td>
+          <td>
+            <div class="gap-item"><span class="gap-icon">✗</span>This is a dengue forecasting paper — it never looks at a mosquito. No images, no computer vision, no species ID involved at all.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Works only with historical hospital records — it cannot predict in real-time using live mosquito trap data.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>Covers only 11 districts. Bangladesh has 64 districts — significant geographic coverage gap.</div>
+            <div class="gap-item"><span class="gap-icon">✗</span>No deep learning used — traditional ML only, which limits how complex patterns it can detect.</div>
+          </td>
+          <td>
+            <div class="pub-badge pub-plos">🟢 PLoS ONE</div>
+            <div class="pub-index">SCI Indexed<br>Open Access</div>
+          </td>
+          <td>
+            <a class="source-link" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0270933" target="_blank">↗ PLoS ONE</a>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    <span>Key Finding:</span> Across all five papers, <strong>not a single one</strong> has a field-collected mosquito <em>species image dataset</em> from Bangladesh. Paper 4 is the closest — it uses Bangladesh images but looks at breeding sites, not the mosquito itself. This is the open research gap for your work. Building a small but real, entomologist-verified, field-collected mosquito species dataset from Bangladesh would make any paper built on top of it <strong>immediately publishable</strong> and highly cited in this region.
+  </div>
+
+</div>
+</body>
+</html>
